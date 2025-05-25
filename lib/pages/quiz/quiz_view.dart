@@ -1,0 +1,340 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:spentacademy/pages/quiz/quiz_question.dart';
+
+class BottomNavbar extends StatelessWidget {
+  final int currentIndex;
+  final Function(int) onTap;
+
+  const BottomNavbar({super.key, required this.currentIndex, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomNavigationBar(
+      currentIndex: currentIndex,
+      onTap: onTap,
+      type: BottomNavigationBarType.fixed,
+      backgroundColor: const Color(0xFF0A4DA2),
+      selectedItemColor: Colors.white,
+      unselectedItemColor: Colors.white54,
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+        BottomNavigationBarItem(icon: Icon(Icons.quiz), label: 'Quiz'),
+        BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Material'),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+      ],
+    );
+  }
+}
+
+class QuizView extends StatefulWidget {
+  @override
+  _QuizViewState createState() => _QuizViewState();
+}
+
+class _QuizViewState extends State<QuizView> {
+  int _currentIndex = 1;
+
+  final List<QuizItem> quizzes = [
+    QuizItem(
+      id: 1,
+      title: "Fisika Dasar",
+      description: "Kumpulan soal fisika dasar untuk pemula",
+      totalQuestions: 2,
+      progress: 0.0,
+      color: Color(0xFF0D47A1),
+      icon: Icons.science,
+    ),
+    QuizItem(
+      id: 2,
+      title: "Matematika",
+      description: "Soal-soal matematika SMA",
+      totalQuestions: 1,
+      progress: 0.17,
+      color: Color(0xFF0D47A1),
+      icon: Icons.calculate,
+    ),
+    QuizItem(
+      id: 3,
+      title: "Kimia Organik",
+      description: "Pembelajaran kimia organik tingkat lanjut",
+      totalQuestions: 1,
+      progress: 0.0,
+      color: Color(0xFF0D47A1),
+      icon: Icons.biotech,
+    ),
+    QuizItem(
+      id: 4,
+      title: "Biologi",
+      description: "Soal biologi sel dan molekuler",
+      totalQuestions: 1,
+      progress: 0.0,
+      color: Color(0xFF0D47A1),
+      icon: Icons.pets,
+    ),
+    QuizItem(
+      id: 5,
+      title: "Sejarah Indonesia",
+      description: "Sejarah kemerdekaan Indonesia",
+      totalQuestions: 1,
+      progress: 0.0,
+      color: Color(0xFF0D47A1),
+      icon: Icons.history_edu,
+    ),
+  ];
+
+  void _onNavTap(int idx) {
+    setState(() => _currentIndex = idx);
+
+    switch (idx) {
+      case 0:
+        if (Get.routing.route?.settings.name != null) {
+          Get.offAllNamed('/home');
+        } else {
+          Navigator.pushReplacementNamed(context, '/home');
+        }
+        break;
+      case 1:
+        break;
+      case 2:
+        if (Get.routing.route?.settings.name != null) {
+          Get.offAllNamed('/material');
+        } else {
+          Navigator.pushReplacementNamed(context, '/material');
+        }
+        break;
+      case 3:
+        if (Get.routing.route?.settings.name != null) {
+          Get.offAllNamed('/profile');
+        } else {
+          Navigator.pushReplacementNamed(context, '/profile');
+        }
+        break;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xFF0D47A1),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          'Daftar Soal',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(bottom: 24, top: 8),
+                child: Text(
+                  'Pilih Kategori Soal',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: quizzes.length,
+                  itemBuilder: (context, index) {
+                    return QuizCard(
+                      quiz: quizzes[index],
+                      onTap: () => _navigateToQuiz(),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: BottomNavbar(
+        currentIndex: _currentIndex,
+        onTap: _onNavTap,
+      ),
+    );
+  }
+
+  void _navigateToQuiz() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QuizQuestionPage(),
+      ),
+    );
+  }
+}
+
+class QuizCard extends StatelessWidget {
+  final QuizItem quiz;
+  final VoidCallback onTap;
+
+  const QuizCard({
+    Key? key,
+    required this.quiz,
+    required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 12),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 8,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: quiz.color.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(
+                        quiz.icon,
+                        color: quiz.color,
+                        size: 20,
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            quiz.title,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          SizedBox(height: 2),
+                          Text(
+                            quiz.description,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 12),
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: quiz.color.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        '${quiz.totalQuestions} Soal',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                          color: quiz.color,
+                        ),
+                      ),
+                    ),
+                    Spacer(),
+                    if (quiz.progress > 0)
+                      Text(
+                        '${(quiz.progress * 100).toInt()}%',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: quiz.color,
+                        ),
+                      ),
+                  ],
+                ),
+                if (quiz.progress > 0) ...[
+                  SizedBox(height: 8),
+                  Container(
+                    height: 3,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                    child: FractionallySizedBox(
+                      alignment: Alignment.centerLeft,
+                      widthFactor: quiz.progress,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: quiz.color,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Model QuizItem tanpa daftar soalnya, karena QuizQuestionPage sudah statis
+class QuizItem {
+  final int id;
+  final String title;
+  final String description;
+  final int totalQuestions;
+  final double progress;
+  final Color color;
+  final IconData icon;
+
+  QuizItem({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.totalQuestions,
+    required this.progress,
+    required this.color,
+    required this.icon,
+  });
+}
