@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:spentacademy/pages/material/material_view.dart';
 import '../pages/logreg/login_view.dart';
 import '../pages/logreg/register_view.dart';
 import '../pages/home/home_view.dart';
@@ -20,6 +21,6 @@ class AppRoutes {
     GetPage(name: home, page: () => const HomeView()),
     GetPage(name: quiz, page: () => quiz_page.QuizView()),
     GetPage(name: profile, page: () => const profile_page.ProfileView()),
-    // GetPage(name: material, page: () => const MaterialPage()),
+    GetPage(name: material, page: () => const MaterialView()),
   ];
 }

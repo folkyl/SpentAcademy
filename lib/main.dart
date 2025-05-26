@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'routes/app_routes.dart';
-
-
-
+import 'package:spentacademy/pages/quiz/quiz_question.dart'; // pastikan path-nya sesuai
 
 void main() {
-  // Pastikan binding sudah siap
   WidgetsFlutterBinding.ensureInitialized();
-
+  Get.put(QuizController(), permanent: true); // inisialisasi controller sekali di awal
   runApp(const MyApp());
 }
 

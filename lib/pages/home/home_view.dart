@@ -4,9 +4,6 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 
-// Jangan import ProfileView atau QuizView dari sini, fokus hanya pada HomeView!
-// ProfileView dan QuizView harus diimport di file routes/app_routes.dart saja, dan gunakan alias jika perlu!
-
 class BottomNavbar extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
@@ -19,7 +16,7 @@ class BottomNavbar extends StatelessWidget {
       currentIndex: currentIndex,
       onTap: onTap,
       type: BottomNavigationBarType.fixed,
-      backgroundColor: const Color(0xFF0A4DA2),
+      backgroundColor: const Color(0xFF0D47A1),
       selectedItemColor: Colors.white,
       unselectedItemColor: Colors.white54,
       items: const [
@@ -42,7 +39,6 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   int _currentIndex = 0;
 
-  // Hanya HomeBody yang dihandle di sini
   final List<Widget> _pages = [
     const HomeBody(),
   ];
@@ -62,7 +58,7 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A4DA2),
+      backgroundColor: const Color(0xFF0D47A1),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavbar(
         currentIndex: _currentIndex,
@@ -72,8 +68,7 @@ class _HomeViewState extends State<HomeView> {
   }
 }
 
-// --------------------
-// ISI TAB HOME
+// ------ HOME BODY ------
 class HomeBody extends StatelessWidget {
   const HomeBody({super.key});
 
@@ -88,7 +83,7 @@ class HomeBody extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header bagian atas
+                // Header
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -104,7 +99,7 @@ class HomeBody extends StatelessWidget {
                             ),
                             SizedBox(width: 4),
                             Text(
-                              'GOOD MORNING',
+                              'WELCOME',
                               style: TextStyle(
                                 color: Colors.white70,
                                 fontSize: 12,
@@ -141,7 +136,7 @@ class HomeBody extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
-                // Card Currently Studying
+                // Card: Currently Studying
                 Container(
                   padding: const EdgeInsets.all(16),
                   margin: const EdgeInsets.symmetric(vertical: 16),
@@ -248,18 +243,21 @@ class HomeBody extends StatelessWidget {
                         title: 'Major Ball Games',
                         questions: '20 questions',
                         progress: 0.45,
+                        onTap: () => Get.toNamed('/quiz'),
                       ),
                       continueCard(
                         imagePath: 'assets/force_motion.png',
                         title: 'Force and Motion',
                         questions: '25 questions',
                         progress: 0.62,
+                        onTap: () => Get.toNamed('/quiz'),
                       ),
                       continueCard(
                         imagePath: 'assets/chemistry.png',
                         title: 'Basic Chemistry',
                         questions: '15 questions',
                         progress: 0.35,
+                        onTap: () => Get.toNamed('/quiz'),
                       ),
                     ],
                   ),
@@ -267,10 +265,10 @@ class HomeBody extends StatelessWidget {
 
                 // Recommend Material Section
                 const SizedBox(height: 24),
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    const Text(
                       'Recommend Material',
                       style: TextStyle(
                         color: Colors.white,
@@ -278,11 +276,14 @@ class HomeBody extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(
-                      'See all',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
+                    GestureDetector(
+                      onTap: () => Get.toNamed('/material'),
+                      child: const Text(
+                        'See all',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
                       ),
                     ),
                   ],
@@ -474,52 +475,59 @@ Widget continueCard({
   required String title,
   required String questions,
   required double progress,
+  VoidCallback? onTap,
 }) {
-  return Container(
-    width: 140,
-    margin: const EdgeInsets.only(right: 16),
-    padding: const EdgeInsets.all(12),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(20),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Center(
-          child: Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(12),
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      width: 140,
+      margin: const EdgeInsets.only(right: 16),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Image.asset(
+                imagePath,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) =>
+                    const Icon(Icons.image, color: Colors.grey, size: 40),
+              ),
             ),
-            child: const Icon(Icons.image, color: Colors.grey, size: 40),
           ),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
-            color: Color(0xFF002560),
+          const SizedBox(height: 12),
+          Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+              color: Color(0xFF002560),
+            ),
           ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          questions,
-          style: const TextStyle(fontSize: 12, color: Color(0xFF9CA4AF)),
-        ),
-        const SizedBox(height: 8),
-        // Hilangkan borderRadius jika Flutter-mu < 3.7
-        LinearProgressIndicator(
-          value: progress,
-          backgroundColor: const Color(0xFFE6ECF5),
-          valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF014CA1)),
-          // borderRadius: BorderRadius.circular(20), // Hapus baris ini jika error!
-        ),
-      ],
+          const SizedBox(height: 4),
+          Text(
+            questions,
+            style: const TextStyle(fontSize: 12, color: Color(0xFF9CA4AF)),
+          ),
+          const SizedBox(height: 8),
+          LinearProgressIndicator(
+            value: progress,
+            backgroundColor: const Color(0xFFE6ECF5),
+            valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF014CA1)),
+          ),
+        ],
+      ),
     ),
   );
 }

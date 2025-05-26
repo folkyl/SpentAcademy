@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:spentacademy/pages/notes/add_note.dart';
 import 'dart:math' as math;
 import 'package:spentacademy/pages/quiz/quiz_overview.dart';
-import 'package:spentacademy/pages/quiz/quiz_overview.dart';
 
-// Model
+// MODEL
 class QuizQuestion {
   final String? imageUrl;
   final String question;
@@ -19,13 +19,12 @@ class QuizQuestion {
   });
 }
 
-// Controller
+// CONTROLLER
 class QuizController extends GetxController {
   var currentQuestionIndex = 0.obs;
   var selectedAnswer = (-1).obs;
   var isAnswered = false.obs;
   var score = 0.obs;
-
   List<bool> userAnswers = [];
 
   final List<QuizQuestion> questions = [
@@ -144,7 +143,7 @@ class QuizController extends GetxController {
       if (isCorrect) {
         score.value++;
       }
-      userAnswers.add(isCorrect); // Track answer for overview
+      userAnswers.add(isCorrect);
     }
   }
 
@@ -154,8 +153,8 @@ class QuizController extends GetxController {
       selectedAnswer.value = -1;
       isAnswered.value = false;
     } else {
-      // Quiz completed, navigate to overview page
-      Get.off(() => QuizOverviewPage());
+      // Quiz selesai, ke halaman congratulations
+      Get.offAll(() => CongratulationsPage());
     }
   }
 
@@ -172,11 +171,10 @@ class QuizController extends GetxController {
   bool get isLastQuestion => currentQuestionIndex.value == questions.length - 1;
 }
 
-// Quiz Question Page
+// QUIZ PAGE
 class QuizQuestionPage extends StatelessWidget {
-  final QuizController controller = Get.put(QuizController());
-
-  QuizQuestionPage({Key? key}) : super(key: key);
+  final QuizController controller = Get.find<QuizController>();
+  QuizQuestionPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -193,7 +191,7 @@ class QuizQuestionPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // AppBar Custom
+                // AppBar
                 Padding(
                   padding: const EdgeInsets.only(left: 8, top: 12, right: 8),
                   child: Row(
@@ -250,7 +248,7 @@ class QuizQuestionPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
 
-                // Formula/Image Card (jika ada imageUrl)
+                // Formula Card jika ada gambar
                 if (controller.currentQuestion.imageUrl != null)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -472,70 +470,69 @@ class QuizQuestionPage extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildFormulaImage(String imageUrl) {
-    // Simulasi gambar rumus dengan placeholder (bisa ganti jadi Image.asset)
-    Map<String, Widget> formulaMap = {
-      "assets/images/force_formula.png": const Text(
-        "F = m × a",
-        style: TextStyle(
-          fontSize: 36,
-          fontFamily: "Times New Roman",
-          fontWeight: FontWeight.w400,
-          color: Color(0xFF133971),
-          fontStyle: FontStyle.italic,
-        ),
-      ),
-      "assets/images/energy_formula.png": const Text(
-        "E = mc²",
-        style: TextStyle(
-          fontSize: 36,
-          fontFamily: "Times New Roman",
-          fontWeight: FontWeight.w400,
-          color: Color(0xFF133971),
-          fontStyle: FontStyle.italic,
-        ),
-      ),
-      "assets/images/velocity_formula.png": const Text(
-        "v = d/t",
-        style: TextStyle(
-          fontSize: 36,
-          fontFamily: "Times New Roman",
-          fontWeight: FontWeight.w400,
-          color: Color(0xFF133971),
-          fontStyle: FontStyle.italic,
-        ),
-      ),
-      "assets/images/power_formula.png": const Text(
-        "P = W/t",
-        style: TextStyle(
-          fontSize: 36,
-          fontFamily: "Times New Roman",
-          fontWeight: FontWeight.w400,
-          color: Color(0xFF133971),
-          fontStyle: FontStyle.italic,
-        ),
-      ),
-      "assets/images/ohms_law.png": const Text(
-        "V = I × R",
-        style: TextStyle(
-          fontSize: 36,
-          fontFamily: "Times New Roman",
-          fontWeight: FontWeight.w400,
-          color: Color(0xFF133971),
-          fontStyle: FontStyle.italic,
-        ),
-      ),
-    };
-    return formulaMap[imageUrl] ?? Container();
-  }
 }
 
-// Congratulations Page
+// Fungsi gambar rumus (atau asset beneran kalau ada)
+Widget _buildFormulaImage(String imageUrl) {
+  Map<String, Widget> formulaMap = {
+    "assets/images/force_formula.png": const Text(
+      "F = m × a",
+      style: TextStyle(
+        fontSize: 36,
+        fontFamily: "Times New Roman",
+        fontWeight: FontWeight.w400,
+        color: Color(0xFF133971),
+        fontStyle: FontStyle.italic,
+      ),
+    ),
+    "assets/images/energy_formula.png": const Text(
+      "E = mc²",
+      style: TextStyle(
+        fontSize: 36,
+        fontFamily: "Times New Roman",
+        fontWeight: FontWeight.w400,
+        color: Color(0xFF133971),
+        fontStyle: FontStyle.italic,
+      ),
+    ),
+    "assets/images/velocity_formula.png": const Text(
+      "v = d/t",
+      style: TextStyle(
+        fontSize: 36,
+        fontFamily: "Times New Roman",
+        fontWeight: FontWeight.w400,
+        color: Color(0xFF133971),
+        fontStyle: FontStyle.italic,
+      ),
+    ),
+    "assets/images/power_formula.png": const Text(
+      "P = W/t",
+      style: TextStyle(
+        fontSize: 36,
+        fontFamily: "Times New Roman",
+        fontWeight: FontWeight.w400,
+        color: Color(0xFF133971),
+        fontStyle: FontStyle.italic,
+      ),
+    ),
+    "assets/images/ohms_law.png": const Text(
+      "V = I × R",
+      style: TextStyle(
+        fontSize: 36,
+        fontFamily: "Times New Roman",
+        fontWeight: FontWeight.w400,
+        color: Color(0xFF133971),
+        fontStyle: FontStyle.italic,
+      ),
+    ),
+  };
+  return formulaMap[imageUrl] ?? Container();
+}
+
+// CONGRATULATIONS PAGE
 class CongratulationsPage extends StatelessWidget {
   final QuizController controller = Get.find<QuizController>();
-
-  CongratulationsPage({Key? key}) : super(key: key);
+  CongratulationsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -555,13 +552,12 @@ class CongratulationsPage extends StatelessWidget {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.arrow_back_ios, color: navColor, size: 20),
-                      onPressed: () => Get.offAllNamed('/home'),
+                      onPressed: () => Get.to(() => QuizOverviewPage()),
                       splashRadius: 20,
                     ),
                   ],
                 ),
               ),
-
               const SizedBox(height: 20),
 
               // Progress Circle (completed)
@@ -599,7 +595,6 @@ class CongratulationsPage extends StatelessWidget {
                   ],
                 ),
               ),
-
               const SizedBox(height: 40),
 
               const Padding(
@@ -615,7 +610,6 @@ class CongratulationsPage extends StatelessWidget {
                   ),
                 ),
               ),
-
               const SizedBox(height: 40),
 
               // Achievement Card
@@ -685,9 +679,7 @@ class CongratulationsPage extends StatelessWidget {
                           ),
                         ],
                       ),
-
                       const SizedBox(height: 24),
-
                       const Text(
                         "@user",
                         style: TextStyle(
@@ -696,9 +688,7 @@ class CongratulationsPage extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-
                       const SizedBox(height: 8),
-
                       Text(
                         "Quiz completed with ${controller.score.value}/${controller.questions.length} correct answers!",
                         textAlign: TextAlign.center,
@@ -712,7 +702,6 @@ class CongratulationsPage extends StatelessWidget {
                   ),
                 ),
               ),
-
               const SizedBox(height: 40),
 
               // Action Buttons
@@ -723,7 +712,12 @@ class CongratulationsPage extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () => Get.to(() => QuizOverviewPage()),
+                        onPressed: () {
+                          // Misal kamu punya halaman overview quiz, bisa arahkan ke sana.
+                          // Ganti dengan Get.to(QuizOverviewPage()) kalau sudah ada.
+                          // Untuk sementara kembali ke home.
+                          Get.to(() => QuizOverviewPage());
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF3777C2),
                           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -741,14 +735,12 @@ class CongratulationsPage extends StatelessWidget {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 16),
-
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton(
                         onPressed: () {
-                          Get.offAllNamed('/notes');
+                          Get.to(() => AddNotePage());
                         },
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -770,7 +762,6 @@ class CongratulationsPage extends StatelessWidget {
                   ],
                 ),
               ),
-
               const SizedBox(height: 40),
 
               // Progress Bar (100%)

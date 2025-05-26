@@ -12,6 +12,273 @@ class RegisterView extends StatefulWidget {
 class _RegisterViewState extends State<RegisterView> {
   bool _obscure = true;
 
+  // Method untuk handle social login
+  void _handleSocialLogin(String provider) {
+    _showSocialLoginDialog(provider);
+  }
+
+  void _showSocialLoginDialog(String provider) {
+    String title = '';
+    String content = '';
+    Color iconColor = Colors.blueAccent;
+    IconData iconData = Icons.login;
+
+    switch (provider) {
+      case 'Google':
+        title = 'Sign up with Google';
+        content = 'You\'ll be redirected to Google to sign in with your Google account. Your Google profile information will be used to create your SpentAcademy account.';
+        iconColor = Colors.red;
+        iconData = Icons.g_mobiledata;
+        break;
+      case 'Apple':
+        title = 'Sign up with Apple';
+        content = 'You\'ll be redirected to Apple to sign in with your Apple ID. Your Apple ID information will be used to create your SpentAcademy account securely.';
+        iconColor = Colors.black;
+        iconData = Icons.apple;
+        break;
+      case 'Facebook':
+        title = 'Sign up with Facebook';
+        content = 'You\'ll be redirected to Facebook to sign in with your Facebook account. Your Facebook profile information will be used to create your SpentAcademy account.';
+        iconColor = const Color(0xFF1877F3);
+        iconData = Icons.facebook;
+        break;
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: iconColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                iconData,
+                color: iconColor,
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              content,
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.black87,
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.blue.shade200),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.security,
+                    color: Colors.blue.shade600,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  const Expanded(
+                    child: Text(
+                      'Your data is protected and secure with us.',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              'Cancel',
+              style: TextStyle(
+                color: Colors.grey.shade600,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: iconColor,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+              _processSocialLogin(provider);
+            },
+            child: Text('Continue with $provider'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _processSocialLogin(String provider) {
+    // Simulasi loading
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  provider == 'Google' ? Colors.red :
+                  provider == 'Apple' ? Colors.black :
+                  const Color(0xFF1877F3),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Connecting to $provider...',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Please wait while we set up your account.',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey.shade600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    // Simulasi delay untuk proses login
+    Future.delayed(const Duration(seconds: 2), () {
+      Navigator.of(context).pop(); // Tutup loading dialog
+      
+      // TODO: Di sini Anda bisa menambahkan logic untuk:
+      // 1. Panggil API social login
+      // 2. Simpan token/user data
+      // 3. Navigate ke halaman selanjutnya
+      
+      // Untuk sekarang, tampilkan hasil sukses
+      _showSuccessDialog(provider);
+    });
+  }
+
+  void _showSuccessDialog(String provider) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                color: Colors.green.shade100,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.check,
+                color: Colors.green,
+                size: 30,
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Account Created Successfully!',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Welcome to SpentAcademy! Your account has been created using $provider.',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey.shade600,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+        actions: [
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2C73DD),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                // TODO: Navigate ke dashboard atau halaman utama
+                // Get.offAllNamed(AppRoutes.dashboard);
+              },
+              child: const Text(
+                'Get Started',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +298,7 @@ class _RegisterViewState extends State<RegisterView> {
               child: Container(
                 width: double.infinity,
                 constraints: BoxConstraints(
-                  minHeight: MediaQuery.of(context).size.height * 0.65, // Boleh diatur sesuai kebutuhan
+                  minHeight: MediaQuery.of(context).size.height * 0.65,
                 ),
                 decoration: const BoxDecoration(
                   color: Colors.white,
@@ -41,7 +308,7 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 24, 24, 36), // Tambah padding bawah
+                  padding: const EdgeInsets.fromLTRB(24, 24, 24, 36),
                   child: Column(
                     children: [
                       const SizedBox(height: 35),
@@ -203,7 +470,7 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                       const SizedBox(height: 32),
 
-                      // Divider dengan teks
+                      // Divider dengan teks (Static)
                       Row(
                         children: [
                           const Expanded(child: Divider(color: Color(0xFFCED6E0))),
@@ -223,7 +490,7 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                       const SizedBox(height: 22),
 
-                      // Tombol sosial
+                      // Tombol sosial (Clickable)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -234,17 +501,17 @@ class _RegisterViewState extends State<RegisterView> {
                               height: 28,
                               fit: BoxFit.contain,
                             ),
-                            onTap: () {},
+                            onTap: () => _handleSocialLogin('Google'),
                           ),
                           const SizedBox(width: 18),
                           _SocialButton(
                             icon: Icon(Icons.apple, color: Colors.black, size: 26),
-                            onTap: () {},
+                            onTap: () => _handleSocialLogin('Apple'),
                           ),
                           const SizedBox(width: 18),
                           _SocialButton(
                             icon: Icon(Icons.facebook, color: Color(0xFF1877F3), size: 26),
-                            onTap: () {},
+                            onTap: () => _handleSocialLogin('Facebook'),
                           ),
                         ],
                       ),
@@ -348,6 +615,7 @@ class _SocialButton extends StatelessWidget {
     return Material(
       color: Colors.white,
       borderRadius: BorderRadius.circular(12),
+      elevation: 2, // Tambah sedikit shadow untuk efek visual
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: onTap,
@@ -356,7 +624,7 @@ class _SocialButton extends StatelessWidget {
           height: 48,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            border: Border.all(color: borderColor, width: 2),
+            border: Border.all(color: Colors.grey.shade300, width: 1), // Tambah border tipis
             borderRadius: BorderRadius.circular(12),
           ),
           child: icon,
